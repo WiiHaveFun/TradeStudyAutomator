@@ -76,9 +76,11 @@ class FilePickerFrame(ttk.Frame):
         # print([r.split(",") for r in self.data.split("\n")])
 
         for r, row_array in enumerate(data_array):
+            if r > 0:
+                ttk.Label(self.readerWindow, text=r).grid(column=0, row=r, sticky=tk.W, padx=5)
             for c, entry in enumerate(row_array):
-                ttk.Label(self.readerWindow, text=entry).grid(column=c, row=r)
-                self.readerWindow.columnconfigure(c, weight=1)
+                ttk.Label(self.readerWindow, text=entry).grid(column=c + 1, row=r, padx=20)
+                # self.readerWindow.columnconfigure(c, weight=1)
 
     def view_text(self):
         self.readerWindow.columnconfigure(0, weight=1)
