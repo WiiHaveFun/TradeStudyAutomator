@@ -7,9 +7,9 @@ class FilePickerFrame(ttk.Frame):
     def __init__(self, container, file_type_name, file_type):
         super().__init__(container)
 
+        # file parameters and file data
         self.fileType = file_type
         self.fileTypeName = file_type_name
-        self.fName = None
         self.f = None
         self.data = None
 
@@ -38,26 +38,24 @@ class FilePickerFrame(ttk.Frame):
         # file type
         file_types = {
             (self.fileTypeName, self.fileType),
-            ("All files", "*.*")
         }
 
         # show the open file dialog
-        self.fName = fd.askopenfilename(filetypes=file_types)
+        self.f = fd.askopenfile(filetypes=file_types)
 
-        # display file path
-        if self.fName is not None:
-            self.filePathLabel['text'] = "Path: " + self.fName
-            # self.data = self.f.read()
+        # display file path and read file
+        if self.f is not None:
+            self.filePathLabel['text'] = "Path: " + self.f.name
+            self.data = self.f.read()
+            self.f.close()
 
+    # TODO Add line numbers
     def view_file(self):
-        if self.fName is not None:
+        if self.f is not None:
             if self.readerWindow is None:
-                self.f = open(self.fName, "r")
-                self.data = self.f.read()
-
                 self.readerWindow = tk.Toplevel()
                 self.readerWindow.geometry("750x375")
-                self.readerWindow.title(self.fName)
+                self.readerWindow.title(self.f.name)
                 self.readerWindow.protocol('WM_DELETE_WINDOW', self.remove_window)
 
                 if self.fileType == "*.csv":
@@ -68,12 +66,10 @@ class FilePickerFrame(ttk.Frame):
     def remove_window(self):
         self.readerWindow.destroy()
         self.readerWindow = None
-        self.f.close()
 
     # TODO Make scrollable
     def view_csv(self):
-        data_array = [r.split(",") for r in self.data.split("\n")]
-        # print([r.split(",") for r in self.data.split("\n")])
+        data_array = self.get_csv_data()
 
         for r, row_array in enumerate(data_array):
             if r > 0:
@@ -90,3 +86,10 @@ class FilePickerFrame(ttk.Frame):
         text.grid(column=0, row=0, sticky=tk.NSEW)
         text.insert(tk.END, self.data)
         text.configure(state=tk.DISABLED)
+
+    def get_data(self):
+        return self.data
+
+    def get_csv_data(self):
+        data_array = [r.split(",") for r in self.data.split("\n")]
+        return data_array
