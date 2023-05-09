@@ -26,7 +26,7 @@ class MainWindow(tk.Tk):
         avl_header.grid(column=0, row=4, sticky=tk.W, padx=5, pady=5)
 
         line_edit_header = ttk.Label(self, text="Line edits")
-        line_edit_header.grid(column=0, row=5, sticky=tk.W, padx=5, pady=5)
+        line_edit_header.grid(column=0, row=6, sticky=tk.W, padx=5, pady=5)
 
 
 if __name__ == "__main__":
