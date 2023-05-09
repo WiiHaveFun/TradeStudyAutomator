@@ -1,13 +1,17 @@
 import tkinter as tk
 from MainWindow import MainWindow
 from FilePickerFrame import FilePickerFrame
+from ColumnHeaderFrame import ColumnHeaderFrame
 
 mainWindow = MainWindow()
 
-csvPickerFrame = FilePickerFrame(mainWindow, "CSV files", "*.csv")
+columnHeaderFrame = ColumnHeaderFrame(mainWindow)
+columnHeaderFrame.grid(row=3, column=0, stick=tk.W, pady=5)
+
+csvPickerFrame = FilePickerFrame(mainWindow, "CSV files", "*.csv", header_displayer=columnHeaderFrame)
 csvPickerFrame.grid(row=2, column=0, sticky=tk.W)
 
 avlPickerFrame = FilePickerFrame(mainWindow, "AVL files", "*.avl")
-avlPickerFrame.grid(row=4, column=0, sticky=tk.W)
+avlPickerFrame.grid(row=5, column=0, sticky=tk.W)
 
 mainWindow.mainloop()

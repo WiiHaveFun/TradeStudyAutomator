@@ -2,10 +2,11 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import filedialog as fd
 import math
+from ColumnHeaderFrame import ColumnHeaderFrame
 
 
 class FilePickerFrame(ttk.Frame):
-    def __init__(self, container, file_type_name, file_type):
+    def __init__(self, container, file_type_name, file_type, header_displayer=None):
         super().__init__(container)
 
         # file parameters and file data
@@ -23,6 +24,9 @@ class FilePickerFrame(ttk.Frame):
 
         # path label
         self.filePathLabel = ttk.Label(self, text="Path:")
+
+        # header displayer
+        self.headerDisplayer = header_displayer
 
         self.create_widgets()
 
@@ -50,6 +54,11 @@ class FilePickerFrame(ttk.Frame):
             self.filePathLabel['text'] = "Path: " + self.f.name
             self.data = self.f.read()
             self.f.close()
+
+            if self.headerDisplayer is not None:
+                self.headerDisplayer.update_headers(self.get_csv_data())
+
+
 
     def view_file(self):
         if self.f is not None:
