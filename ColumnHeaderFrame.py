@@ -12,5 +12,5 @@ class ColumnHeaderFrame(ttk.Frame):
         ttk.Label(self, text="Columns").grid(column=0, columnspan=len(headers), row=0, padx=5)
 
         for h, header in enumerate(headers):
-            label = str(h + 1) + ": " + header
+            label = str(h + 1) + "—" + header
             ttk.Label(self, text=label).grid(column=h, row=1, padx=5)

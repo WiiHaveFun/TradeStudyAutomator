@@ -1,6 +1,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter.simpledialog import Dialog
+import math
 
 
 class LineEditsFrame(ttk.Frame):
@@ -23,6 +24,8 @@ class LineEditsFrame(ttk.Frame):
         self.csvPicker.readButton.bind("<ButtonRelease-1>", self.delete_line_edits)
         self.avlPicker.readButton.bind("<ButtonRelease-1>", self.delete_line_edits)
 
+        self.previewWindow = None
+
         self.create_widgets()
 
     def create_widgets(self):
@@ -40,7 +43,7 @@ class LineEditsFrame(ttk.Frame):
     def add_line_edit(self):
         if self.csvPicker.is_file_picked() and self.avlPicker.is_file_picked():
             headers = self.csvPicker.get_csv_data()[0]
-            headers = [str(h + 1) + ": " + header for h, header in enumerate(headers)]
+            headers = [str(h + 1) + "—" + header for h, header in enumerate(headers)]
 
             line_edit_parameters = LineEditDialog(self.editsFrame, headers, self.avlPicker.get_data())
 
@@ -58,14 +61,64 @@ class LineEditsFrame(ttk.Frame):
                     ttk.Label(self.editsFrame, text=edit.column).grid(row=e + 1, column=2, sticky=tk.W, padx=5)
 
     def preview_line_edits(self):
-        pass
+        if self.previewWindow is None and self.avlPicker.is_file_picked():
+            self.previewWindow = tk.Toplevel()
+            self.previewWindow.geometry("750x375")
+            self.previewWindow.title("Line edits preview")
+            self.previewWindow.protocol('WM_DELETE_WINDOW', self.remove_window)
+
+            # Add line numbers
+            lines = self.avlPicker.get_data().split("\n")
+            order = math.floor(math.log(len(lines), 10))
+
+            # Replace line edits
+
+            for edit in self.edits:
+                line = lines[int(edit.line) - 1].split()
+                line[int(edit.word) - 1] = edit.column
+                line = "\t".join(line)
+                lines[int(edit.line) - 1] = line
+
+                start_index = line.find(edit.column) + order + 2
+                end_index = start_index + len(edit.column)
+
+
+
+            editIndices = []
+            for edit in self.edits:
+                start_index = 0
+                line = lines[int(edit.line) - 1].split()
+                for i in range(int(edit.word) - 1):
+                    start_index += len(line[i]) + 1
+
+                start_index += order + 2
+                end_index = start_index + len(edit.column)
+                editIndices.append([str(edit.line) + "." + str(start_index), str(edit.line) + "." + str(end_index)])
+
+            for i in range(len(lines)):
+                lines[i] = str(i + 1).rjust(order + 1, " ") + "\t" + lines[i]
+            numbered_data = "\n".join(lines)
+
+            self.previewWindow.columnconfigure(0, weight=1)
+            self.previewWindow.rowconfigure(0, weight=1)
+
+            text = tk.Text(self.previewWindow)
+            text.grid(column=0, row=0, sticky=tk.NSEW)
+            text.insert(tk.END, numbered_data)
+            text.configure(state=tk.DISABLED)
+
+            for editIndex in editIndices:
+                text.tag_add("highlight", editIndex[0], editIndex[1])
+                text.tag_config("highlight", background="yellow", foreground="black")
+
+    def remove_window(self):
+        self.previewWindow.destroy()
+        self.previewWindow = None
 
     def delete_line_edits(self, event=None):
         self.edits = []
         for widget in self.editsFrame.winfo_children():
             widget.destroy()
-
-
 
 
 class LineEdit:
