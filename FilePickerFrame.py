@@ -2,7 +2,6 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import filedialog as fd
 import math
-from ColumnHeaderFrame import ColumnHeaderFrame
 
 
 class FilePickerFrame(ttk.Frame):
@@ -55,7 +54,7 @@ class FilePickerFrame(ttk.Frame):
             self.data = self.f.read()
             self.f.close()
 
-            if self.headerDisplayer is not None:
+            if self.headerDisplayer is not None and self.fileType == "*.csv":
                 self.headerDisplayer.update_headers(self.get_csv_data())
 
 
@@ -111,3 +110,6 @@ class FilePickerFrame(ttk.Frame):
     def get_csv_data(self):
         data_array = [r.split(",") for r in self.data.split("\n")]
         return data_array
+
+    def is_file_picked(self):
+        return self.f is not None
