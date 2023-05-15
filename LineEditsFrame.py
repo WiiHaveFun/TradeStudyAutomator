@@ -72,19 +72,13 @@ class LineEditsFrame(ttk.Frame):
             order = math.floor(math.log(len(lines), 10))
 
             # Replace line edits
-
             for edit in self.edits:
                 line = lines[int(edit.line) - 1].split()
                 line[int(edit.word) - 1] = edit.column
                 line = "\t".join(line)
                 lines[int(edit.line) - 1] = line
 
-                start_index = line.find(edit.column) + order + 2
-                end_index = start_index + len(edit.column)
-
-
-
-            editIndices = []
+            edit_indices = []
             for edit in self.edits:
                 start_index = 0
                 line = lines[int(edit.line) - 1].split()
@@ -93,7 +87,7 @@ class LineEditsFrame(ttk.Frame):
 
                 start_index += order + 2
                 end_index = start_index + len(edit.column)
-                editIndices.append([str(edit.line) + "." + str(start_index), str(edit.line) + "." + str(end_index)])
+                edit_indices.append([str(edit.line) + "." + str(start_index), str(edit.line) + "." + str(end_index)])
 
             for i in range(len(lines)):
                 lines[i] = str(i + 1).rjust(order + 1, " ") + "\t" + lines[i]
@@ -107,7 +101,7 @@ class LineEditsFrame(ttk.Frame):
             text.insert(tk.END, numbered_data)
             text.configure(state=tk.DISABLED)
 
-            for editIndex in editIndices:
+            for editIndex in edit_indices:
                 text.tag_add("highlight", editIndex[0], editIndex[1])
                 text.tag_config("highlight", background="yellow", foreground="black")
 
