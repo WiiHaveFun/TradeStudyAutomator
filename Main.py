@@ -5,6 +5,8 @@ from FilePickerFrame import FilePickerFrame
 from ColumnHeaderFrame import ColumnHeaderFrame
 from LineEditsFrame import LineEditsFrame
 import os
+import subprocess
+import time
 import datetime
 
 mainWindow = MainWindow()
@@ -35,6 +37,11 @@ def start_trade_study():
         dateString = datetime.datetime.now().strftime("%Y-%m-%d %H.%M.%S");
         os.mkdir(dateString);
 
+        instructionsFile = open("sizing.txt", "w")
+        instructions = instructionsFile.readlines()
+        instructions[0] = "load " + avlPickerFrame.f.name + "\n"
+        instructionsFile.writelines(instructions)
+
         for i in range(len(csvData)):
             for edit in edits:
                 line = lines[int(edit.line) - 1].split()
@@ -47,7 +54,13 @@ def start_trade_study():
                 avlFile.write(avlData)
                 avlFile.close()
 
+                print("running!")
+                proc = subprocess.Popen("./run_sizing.sh")
+                time.sleep(5)
+                proc.kill()
 
+                new_data_file_name = dateString + "/data" + str(i + 1) + ".txt"
+                os.rename("data.txt", new_data_file_name)
 
         tradeStudyStarted = False
 

@@ -1,0 +1,24 @@
+load /Users/michaelchen/Documents/M-Fly/YMX-8D.avl
+mset 0
+oper
+d1
+rm
+0
+d2
+pm
+0
+d3
+ym
+0
+c1
+g 9.81
+d 1.225
+m 15
+v 12
+
+a
+a
+1.5
+x
+st
+data.txt
