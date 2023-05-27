@@ -1,4 +1,4 @@
-load /Users/michaelchen/Documents/M-Fly/YMX-8D.avl
+load /Users/michaelchen/PycharmProjects/TradeStudyAutomator/YMX-8D.avl
 mset 0
 oper
 d1

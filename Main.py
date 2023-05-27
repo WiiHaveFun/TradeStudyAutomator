@@ -37,30 +37,35 @@ def start_trade_study():
         dateString = datetime.datetime.now().strftime("%Y-%m-%d %H.%M.%S");
         os.mkdir(dateString);
 
-        instructionsFile = open("sizing.txt", "w")
+        instructionsFile = open("sizing.txt", "r")
         instructions = instructionsFile.readlines()
+        instructionsFile.close()
+
+        instructionsFile = open("sizing.txt", "w")
         instructions[0] = "load " + avlPickerFrame.f.name + "\n"
         instructionsFile.writelines(instructions)
+        instructionsFile.close()
 
         for i in range(len(csvData)):
             for edit in edits:
                 line = lines[int(edit.line) - 1].split()
                 line[int(edit.word) - 1] = str(csvData[i][int(edit.column.split("—")[0]) - 1])
-                line = "\t".join(line)
+                line = " ".join(line)
                 lines[int(edit.line) - 1] = line
-                avlData = "\n".join(lines)
 
-                avlFile = open(avlPickerFrame.f.name, "w")
-                avlFile.write(avlData)
-                avlFile.close()
+            avlData = "\n".join(lines)
 
-                print("running!")
-                proc = subprocess.Popen("./run_sizing.sh")
-                time.sleep(5)
-                proc.kill()
+            avlFile = open(avlPickerFrame.f.name, "w")
+            avlFile.write(avlData)
+            avlFile.close()
 
-                new_data_file_name = dateString + "/data" + str(i + 1) + ".txt"
-                os.rename("data.txt", new_data_file_name)
+            print("running!")
+            proc = subprocess.Popen("./run_sizing.sh")
+            time.sleep(5)
+            proc.kill()
+
+            new_data_file_name = dateString + "/data" + str(i + 1) + ".txt"
+            os.rename("data.txt", new_data_file_name)
 
         tradeStudyStarted = False
 
