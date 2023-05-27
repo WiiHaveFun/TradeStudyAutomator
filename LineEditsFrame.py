@@ -114,6 +114,9 @@ class LineEditsFrame(ttk.Frame):
         for widget in self.editsFrame.winfo_children():
             widget.destroy()
 
+    def get_line_edits(self):
+        return self.edits
+
 
 class LineEdit:
     def __init__(self, line, word, column):
