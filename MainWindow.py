@@ -32,6 +32,10 @@ class MainWindow(tk.Tk):
         read_csv_header = ttk.Label(self, text="Select trade study results")
         read_csv_header.grid(column=1, row=1, sticky=tk.W, padx=5, pady=5)
 
+        word_picker_header = ttk.Label(self, text="Data picker")
+        word_picker_header.grid(column=1, row=4, sticky=tk.W, padx=5, pady=5)
+
+
 if __name__ == "__main__":
     mainWindow = MainWindow()
     mainWindow.mainloop()

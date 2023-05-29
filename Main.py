@@ -10,6 +10,8 @@ import subprocess
 import time
 import datetime
 
+from WordPickerFrame import WordPickerFrame
+
 mainWindow = MainWindow()
 
 columnHeaderFrame = ColumnHeaderFrame(mainWindow)
@@ -75,5 +77,8 @@ startButton.grid(row=8, column=0, sticky=tk.W, padx=5, pady=5)
 
 tradeDataPickerFrame = FolderPickerFrame(mainWindow)
 tradeDataPickerFrame.grid(row=2, column=1, sticky=tk.W)
+
+wordPickerFrame = WordPickerFrame(mainWindow, tradeDataPickerFrame)
+wordPickerFrame.grid(row=5, column=1, sticky=tk.W)
 
 mainWindow.mainloop()
