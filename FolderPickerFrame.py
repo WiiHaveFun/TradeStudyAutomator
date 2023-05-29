@@ -41,6 +41,8 @@ class FolderPickerFrame(ttk.Frame):
         if directory:
             try:
                 f = open(directory + "/data1.txt")
+                d = f.read()
+                f.close()
             except FileNotFoundError:
                 tk.messagebox.showwarning(
                     message="Folder missing data files\ndata1.txt must be present\nPlease try again"
@@ -48,7 +50,7 @@ class FolderPickerFrame(ttk.Frame):
             else:
                 self.dir = directory
                 self.filePathLabel['text'] = "Path: " + self.dir
-                self.data = f.read()
+                self.data = d
 
     def view_first_file(self):
         if self.dir is not None:
