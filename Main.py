@@ -4,6 +4,7 @@ from MainWindow import MainWindow
 from FilePickerFrame import FilePickerFrame
 from ColumnHeaderFrame import ColumnHeaderFrame
 from LineEditsFrame import LineEditsFrame
+from FolderPickerFrame import FolderPickerFrame
 import os
 import subprocess
 import time
@@ -71,5 +72,8 @@ def start_trade_study():
 
 startButton = ttk.Button(mainWindow, text="Start", command=start_trade_study)
 startButton.grid(row=8, column=0, sticky=tk.W, padx=5, pady=5)
+
+tradeDataPickerFrame = FolderPickerFrame(mainWindow)
+tradeDataPickerFrame.grid(row=2, column=1, sticky=tk.W)
 
 mainWindow.mainloop()

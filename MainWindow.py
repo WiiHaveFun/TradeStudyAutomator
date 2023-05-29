@@ -10,7 +10,8 @@ class MainWindow(tk.Tk):
         self.title("M-FLY Trade Study Automator")
         self.resizable(False, False)
 
-        self.columnconfigure(0, weight=1)
+        # self.columnconfigure(0, weight=1)
+        # self.columnconfigure(1, weight=1)
 
         self.create_widgets()
 
@@ -28,6 +29,8 @@ class MainWindow(tk.Tk):
         line_edit_header = ttk.Label(self, text="Line edits")
         line_edit_header.grid(column=0, row=6, sticky=tk.W, padx=5, pady=5)
 
+        read_csv_header = ttk.Label(self, text="Select trade study results")
+        read_csv_header.grid(column=1, row=1, sticky=tk.W, padx=5, pady=5)
 
 if __name__ == "__main__":
     mainWindow = MainWindow()
