@@ -16,8 +16,8 @@ class FolderPickerFrame(ttk.Frame):
 
         # buttons
         self.buttonFrame = ttk.Frame(self)
-        self.readButton = ttk.Button(self.buttonFrame, text="Choose file")
-        self.viewButton = ttk.Button(self.buttonFrame, text="View file")
+        self.readButton = ttk.Button(self.buttonFrame, text="Choose folder")
+        self.viewButton = ttk.Button(self.buttonFrame, text="View first file")
 
         # path label
         self.filePathLabel = ttk.Label(self, text="Path:")
@@ -86,6 +86,9 @@ class FolderPickerFrame(ttk.Frame):
 
     def get_data(self):
         return self.data
+
+    def get_directory(self):
+        return self.dir
 
     def is_folder_picked(self):
         return self.dir is not None

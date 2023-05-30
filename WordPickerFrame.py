@@ -20,7 +20,7 @@ class WordPickerFrame(ttk.Frame):
 
         self.folderPicker = folder_picker
 
-        self.folderPicker.readButton.bind("<ButtonRelease-1>", self.delete_line_edits)
+        self.folderPicker.readButton.bind("<ButtonRelease-1>", self.delete_picked_words)
 
         self.previewWindow = None
 
@@ -29,7 +29,7 @@ class WordPickerFrame(ttk.Frame):
     def create_widgets(self):
         self.add_button['command'] = self.add_line_edit
         self.preview_button['command'] = self.preview_line_edits
-        self.delete_button['command'] = self.delete_line_edits
+        self.delete_button['command'] = self.delete_picked_words
 
         self.add_button.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
         self.preview_button.grid(column=1, row=0, sticky=tk.W, padx=5, pady=5)
@@ -40,7 +40,7 @@ class WordPickerFrame(ttk.Frame):
 
     def add_line_edit(self):
         if self.folderPicker.is_folder_picked():
-            line_edit_parameters = LineEditDialog(self.pickerFrame, self.folderPicker.get_data())
+            line_edit_parameters = DataPickerDialog(self.pickerFrame, self.folderPicker.get_data())
 
             if line_edit_parameters.result is not None:
                 line, word = line_edit_parameters.result
@@ -99,12 +99,12 @@ class WordPickerFrame(ttk.Frame):
         self.previewWindow.destroy()
         self.previewWindow = None
 
-    def delete_line_edits(self, event=None):
+    def delete_picked_words(self, event=None):
         self.pickedWords = []
         for widget in self.pickerFrame.winfo_children():
             widget.destroy()
 
-    def get_line_edits(self):
+    def get_picked_data(self):
         return self.pickedWords
 
 
@@ -114,7 +114,7 @@ class PickedWord:
         self.word = word
 
 
-class LineEditDialog(Dialog):
+class DataPickerDialog(Dialog):
     def __init__(self, container, trade_results):
         self.tradeResults = trade_results
 

@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
+import numpy as np
 from MainWindow import MainWindow
 from FilePickerFrame import FilePickerFrame
 from ColumnHeaderFrame import ColumnHeaderFrame
@@ -37,8 +38,8 @@ def start_trade_study():
         csvData.pop(0)
         edits = lineEditsFrame.get_line_edits()
 
-        dateString = datetime.datetime.now().strftime("%Y-%m-%d %H.%M.%S");
-        os.mkdir(dateString);
+        dateString = datetime.datetime.now().strftime("%Y-%m-%d %H.%M.%S")
+        os.mkdir(dateString)
 
         instructionsFile = open("sizing.txt", "r")
         instructions = instructionsFile.readlines()
@@ -72,6 +73,7 @@ def start_trade_study():
 
         tradeStudyStarted = False
 
+
 startButton = ttk.Button(mainWindow, text="Start", command=start_trade_study)
 startButton.grid(row=8, column=0, sticky=tk.W, padx=5, pady=5)
 
@@ -80,5 +82,44 @@ tradeDataPickerFrame.grid(row=2, column=1, sticky=tk.W)
 
 wordPickerFrame = WordPickerFrame(mainWindow, tradeDataPickerFrame)
 wordPickerFrame.grid(row=5, column=1, sticky=tk.W)
+
+def save_to_csv():
+    if tradeDataPickerFrame.is_folder_picked():
+        directory = tradeDataPickerFrame.get_directory()
+        pickedData = wordPickerFrame.get_picked_data()
+
+        dataArray = np.array([])
+
+        isFinished = False
+        count = 1
+        while not isFinished:
+            try:
+                f = open(directory + "/data" + str(count) + ".txt")
+                text = f.readlines()
+                f.close()
+            except FileNotFoundError:
+                isFinished = True
+            else:
+                if count == 1:
+                    for p in pickedData:
+                        line = text[int(p.line) - 1]
+                        header = line.split()[int(p.word) - 1]
+                        dataArray = np.append(dataArray, header)
+
+                dataRow = np.array([])
+                for p in pickedData:
+                    line = text[int(p.line) - 1]
+                    data = float(line.split()[int(p.word) + 1])
+                    dataRow = np.append(dataRow, data)
+
+                dataArray = np.vstack((dataArray, dataRow))
+                count += 1
+
+        np.savetxt(directory + '/output.csv', dataArray, delimiter=',', fmt='%s')
+
+
+
+saveButton = ttk.Button(mainWindow, text="Save to CSV", command=save_to_csv)
+saveButton.grid(row=6, column=1, sticky=tk.W, padx=5, pady=5)
 
 mainWindow.mainloop()
