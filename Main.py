@@ -64,7 +64,10 @@ def start_trade_study():
             avlFile.close()
 
             print("running!")
-            proc = subprocess.Popen("run_avl_commands.sh")
+            try:
+                proc = subprocess.Popen("./run_avl_commands.sh") # For Mac
+            except:
+                proc = subprocess.Popen("bash run_avl_commands.sh") # For Windows
             time.sleep(5)
             proc.kill()
 
@@ -72,6 +75,8 @@ def start_trade_study():
             os.rename("data.txt", new_data_file_name)
 
         tradeStudyStarted = False
+
+        tk.messagebox.showinfo(message="Finished")
 
 
 startButton = ttk.Button(mainWindow, text="Start", command=start_trade_study)
@@ -116,6 +121,8 @@ def save_to_csv():
                 count += 1
 
         np.savetxt(directory + '/output.csv', dataArray, delimiter=',', fmt='%s')
+
+        tk.messagebox.showinfo(message="Finished")
 
 
 
