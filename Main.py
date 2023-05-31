@@ -41,11 +41,11 @@ def start_trade_study():
         dateString = datetime.datetime.now().strftime("%Y-%m-%d %H.%M.%S")
         os.mkdir(dateString)
 
-        instructionsFile = open("sizing.txt", "r")
+        instructionsFile = open("avl_commands.txt", "r")
         instructions = instructionsFile.readlines()
         instructionsFile.close()
 
-        instructionsFile = open("sizing.txt", "w")
+        instructionsFile = open("avl_commands.txt", "w")
         instructions[0] = "load " + avlPickerFrame.f.name + "\n"
         instructionsFile.writelines(instructions)
         instructionsFile.close()
@@ -64,7 +64,7 @@ def start_trade_study():
             avlFile.close()
 
             print("running!")
-            proc = subprocess.Popen("./run_sizing.sh")
+            proc = subprocess.Popen("run_avl_commands.sh")
             time.sleep(5)
             proc.kill()
 

@@ -1,3 +1,3 @@
 #!/bin/sh
 cd /Users/michaelchen/PycharmProjects/TradeStudyAutomator
-(cat sizing.txt; cat) | ./avl
+(cat avl_commands.txt; cat) | ./avl
