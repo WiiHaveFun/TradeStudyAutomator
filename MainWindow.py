@@ -8,7 +8,7 @@ class MainWindow(tk.Tk):
 
         self.geometry("1000x500")
         self.title("M-FLY Trade Study Automator")
-        self.resizable(False, False)
+        self.resizable(True, True)
 
         # self.columnconfigure(0, weight=1)
         # self.columnconfigure(1, weight=1)
