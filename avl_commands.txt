@@ -22,3 +22,5 @@ a
 x
 st
 data.txt
+
+quit
