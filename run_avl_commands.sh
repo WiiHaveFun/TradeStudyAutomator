@@ -1,2 +1,2 @@
 #!/bin/sh
-(cat avl_commands.txt; cat) | ./avl
+cat avl_commands.txt | ./avl

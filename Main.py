@@ -67,7 +67,7 @@ def start_trade_study():
             try:
                 proc = subprocess.Popen("./run_avl_commands.sh") # For Mac
             except:
-                proc = subprocess.Popen("bash run_avl_commands.sh") # For Windows
+                proc = subprocess.Popen("run_avl_commands_2.bat") # For Windows
             time.sleep(5)
             proc.kill()
 
