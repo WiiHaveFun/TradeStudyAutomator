@@ -8,7 +8,6 @@ from LineEditsFrame import LineEditsFrame
 from FolderPickerFrame import FolderPickerFrame
 import os
 import subprocess
-import time
 import datetime
 
 from ProgressBarWindow import ProgressBarWindow
