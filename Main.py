@@ -72,7 +72,11 @@ def start_trade_study():
                 proc = subprocess.Popen("./run_avl_commands.sh") # For Mac
             except:
                 proc = subprocess.Popen("run_avl_commands_2.bat") # For Windows
-            time.sleep(5)
+
+            while not os.path.isfile("data.txt"):
+                pass
+            # time.sleep(1)
+
             proc.kill()
 
             new_data_file_name = dateString + "/data" + str(i + 1) + ".txt"
