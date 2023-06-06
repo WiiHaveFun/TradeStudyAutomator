@@ -31,7 +31,7 @@ tradeStudyStarted = False
 def start_trade_study():
     global tradeStudyStarted
 
-    if not tradeStudyStarted:
+    if not tradeStudyStarted and avlPickerFrame.is_file_picked() and csvPickerFrame.is_file_picked():
         tradeStudyStarted = True
 
         if os.path.isfile("data.txt"):
