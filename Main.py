@@ -33,6 +33,10 @@ def start_trade_study():
 
     if not tradeStudyStarted:
         tradeStudyStarted = True
+
+        if os.path.isfile("data.txt"):
+            os.remove("data.txt")
+
         lines = avlPickerFrame.get_data().split("\n")
         csvData = csvPickerFrame.get_csv_data()
         csvData.pop(0)
@@ -123,7 +127,6 @@ def save_to_csv():
         np.savetxt(directory + '/output.csv', dataArray, delimiter=',', fmt='%s')
 
         tk.messagebox.showinfo(message="Finished")
-
 
 
 saveButton = ttk.Button(mainWindow, text="Save to CSV", command=save_to_csv)
