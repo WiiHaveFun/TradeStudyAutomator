@@ -11,6 +11,7 @@ import subprocess
 import time
 import datetime
 
+from ProgressBarWindow import ProgressBarWindow
 from WordPickerFrame import WordPickerFrame
 
 mainWindow = MainWindow()
@@ -33,6 +34,8 @@ def start_trade_study():
 
     if not tradeStudyStarted and avlPickerFrame.is_file_picked() and csvPickerFrame.is_file_picked():
         tradeStudyStarted = True
+
+        pbw = ProgressBarWindow()
 
         if os.path.isfile("data.txt"):
             os.remove("data.txt")
@@ -82,8 +85,12 @@ def start_trade_study():
             new_data_file_name = dateString + "/data" + str(i + 1) + ".txt"
             os.rename("data.txt", new_data_file_name)
 
+            pbw.update((i + 1) / len(csvData) * 100)
+            mainWindow.update_idletasks()
+
         tradeStudyStarted = False
 
+        pbw.destroy()
         tk.messagebox.showinfo(message="Finished")
 
 
