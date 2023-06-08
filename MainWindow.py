@@ -10,8 +10,8 @@ class MainWindow(tk.Tk):
         self.title("M-FLY Trade Study Automator")
         self.resizable(True, True)
 
-        # self.columnconfigure(0, weight=1)
-        # self.columnconfigure(1, weight=1)
+        icon = tk.PhotoImage(file='M-Fly_Logo.png')
+        self.iconphoto(False, icon)
 
         self.create_widgets()
 
