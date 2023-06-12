@@ -1,5 +1,4 @@
 load /Users/michaelchen/PycharmProjects/TradeStudyAutomator/Example/YMX-8D.avl
-mset 0
 oper
 d1
 rm
@@ -16,9 +15,6 @@ d 1.225
 m 15
 v 12
 
-a
-a
-1.5
 x
 st
 data.txt
