@@ -9,6 +9,7 @@ from FolderPickerFrame import FolderPickerFrame
 import os
 import subprocess
 import datetime
+import time
 
 from ProgressBarWindow import ProgressBarWindow
 from WordPickerFrame import WordPickerFrame
@@ -77,7 +78,8 @@ def start_trade_study():
 
             while not os.path.isfile("data.txt"):
                 pass
-            # time.sleep(1)
+
+            time.sleep(1)
 
             proc.kill()
 
