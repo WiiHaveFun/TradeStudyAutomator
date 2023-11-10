@@ -1,19 +1,10 @@
-load /Users/michaelchen/PycharmProjects/TradeStudyAutomator/Example/YMX-8D.avl
+load /Users/michaelchen/Documents/M-Fly/2023/QM-3/PADA_Trade6/QM-3F_ForTrade.avl
 oper
-d1
-rm
-0
-d2
-pm
-0
-d3
-ym
-0
 c1
+d 1.14
 g 9.81
-d 1.225
-m 15
-v 12
+m 0.4536
+v 17
 
 x
 st

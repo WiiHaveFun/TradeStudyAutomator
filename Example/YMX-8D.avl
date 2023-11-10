@@ -53,7 +53,7 @@ SECTION
   0     0.0762   0      0.61   0
 
 AFILE
-/Users/michaelchen/Documents/M-Fly/ch10.dat
+/Users/michaelchen/PycharmProjects/TradeStudyAutomator/Example/ch10.dat
 
 #Airfoil Taper Start-----------------------------------------------------------(3)
 SECTION
@@ -61,7 +61,7 @@ SECTION
   0     .51       0       0.61   0
 
 AFILE
-/Users/michaelchen/Documents/M-Fly/ch10.dat
+/Users/michaelchen/PycharmProjects/TradeStudyAutomator/Example/ch10.dat
 
 #Aileron Start-----------------------------------------------------------(4)
 SECTION
@@ -69,7 +69,7 @@ SECTION
   0     .755      0     0.551   0
 
 AFILE
-/Users/michaelchen/Documents/M-Fly/ch10.dat
+/Users/michaelchen/PycharmProjects/TradeStudyAutomator/Example/ch10.dat
 
 CONTROL
 # surface  gain  xhinge hvec  SgnDup
@@ -81,7 +81,7 @@ SECTION
   0     1.359     0     0.406   0
 
 AFILE
-/Users/michaelchen/Documents/M-Fly/ch10.dat
+/Users/michaelchen/PycharmProjects/TradeStudyAutomator/Example/ch10.dat
 
 CONTROL
 # surface  gain  xhinge hvec  SgnDup
@@ -93,7 +93,7 @@ SECTION
   0 	1.51 	0 	.37 	0
 
 AFILE
-/Users/michaelchen/Documents/M-Fly/ch10.dat
+/Users/michaelchen/PycharmProjects/TradeStudyAutomator/Example/ch10.dat
 
 #======================================================
 #------------------- Horizontal Tail ------------------
@@ -167,7 +167,7 @@ CONTROL
 #Tip-------------------------------------------------------------------(2)
 SECTION
 # Xle Yle Zle    Chord  Ainc 
-0.0443 0 0.635 0.14 0
+0.0643 0 0.635 0.10 0
 
 NACA
 0012			
