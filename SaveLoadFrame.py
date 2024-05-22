@@ -5,6 +5,7 @@ import pickle
 import os
 
 from FilePickerFrame import FilePickerFrame
+from NewTradeFrame import NewTradeFrame
 
 
 class SaveLoadFrame(ttk.Frame):
@@ -44,6 +45,9 @@ class SaveLoadFrame(ttk.Frame):
             self.new_ts_window.title("New Trade Study")
             self.new_ts_window.protocol('WM_DELETE_WINDOW', self.remove_window)
 
+            self.new_trade_frame = NewTradeFrame(self.new_ts_window)
+
+
     def remove_window(self):
         self.new_ts_window.destroy()
         self.new_ts_window = None
@@ -62,7 +66,7 @@ class SaveLoadFrame(ttk.Frame):
             self.f = open(f_name, "rb")
             self.ts = pickle.load(self.f)
             self.f.close()
-            self.loaded_file_label['text'] = "Path: " + os.path.basename(self.f.name)
+            self.loaded_file_label['text'] = "Name: " + os.path.basename(self.f.name)
 
     def get_ts(self):
         return self.ts
