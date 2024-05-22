@@ -4,6 +4,8 @@ from tkinter import filedialog as fd
 import pickle
 import os
 
+from FilePickerFrame import FilePickerFrame
+
 
 class SaveLoadFrame(ttk.Frame):
     def __init__(self, container):
@@ -12,6 +14,9 @@ class SaveLoadFrame(ttk.Frame):
         # file parameters and trade study data
         self.f = None
         self.ts = None
+
+        # window for new trade study
+        self.new_ts_window = None
 
         # buttons
         self.button_frame = ttk.Frame(self)
@@ -33,7 +38,15 @@ class SaveLoadFrame(ttk.Frame):
         self.loaded_file_label.grid(column=0, row=1, sticky=tk.W, padx=5, pady=5)
 
     def new_ts(self):
-        return
+        if self.new_ts_window is None:
+            self.new_ts_window = tk.Toplevel()
+            self.new_ts_window.geometry("750x375")
+            self.new_ts_window.title("New Trade Study")
+            self.new_ts_window.protocol('WM_DELETE_WINDOW', self.remove_window)
+
+    def remove_window(self):
+        self.new_ts_window.destroy()
+        self.new_ts_window = None
 
     def load_ts(self):
         # file type
