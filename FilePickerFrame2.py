@@ -5,7 +5,6 @@ import math
 import os
 
 from ScrollFrame import ScrollFrame
-from ScrollableFrame import ScrollableFrame
 
 
 class FilePickerFrame(ttk.Frame):
