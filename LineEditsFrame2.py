@@ -2,6 +2,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter.simpledialog import Dialog
 from tkinter.filedialog import asksaveasfilename
+from tkinter.filedialog import askopenfile
 import math
 import numpy as np
 
@@ -41,6 +42,7 @@ class LineEditsFrame(ttk.Frame):
         self.add_button['command'] = self.add_line_edit
         self.preview_button['command'] = self.preview_line_edits
         self.delete_all_button['command'] = self.delete_line_edits
+        self.import_button['command'] = self.import_line_edits
         self.export_button['command'] = self.export_line_edits
 
         self.add_button.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
@@ -66,27 +68,32 @@ class LineEditsFrame(ttk.Frame):
             if line_edit_parameters.result is not None:
 
                 line, word, column = line_edit_parameters.result
-                self.edits.append(LineEdit(line, word, column))
-                if not self.edit_ids:
-                    self.edit_ids.append(0)
-                else:
-                    self.edit_ids.append(self.edit_ids[-1] + 1)
+                self.append_line_edit(LineEdit(line, word, column))
+                self.display_line_edits()
 
-                for widget in self.edits_frame.viewPort.winfo_children():
-                    widget.destroy()
+    def append_line_edit(self, edit):
+        self.edits.append(edit)
+        if not self.edit_ids:
+            self.edit_ids.append(0)
+        else:
+            self.edit_ids.append(self.edit_ids[-1] + 1)
 
-                ttk.Label(self.edits_frame.viewPort, text="Line").grid(row=0, column=0, sticky=tk.W, padx=5)
-                ttk.Label(self.edits_frame.viewPort, text="Word").grid(row=0, column=1, sticky=tk.W, padx=5)
-                ttk.Label(self.edits_frame.viewPort, text="Data Column").grid(row=0, column=2, sticky=tk.W, padx=5)
+    def display_line_edits(self):
+        for widget in self.edits_frame.viewPort.winfo_children():
+            widget.destroy()
 
-                for e, edit in enumerate(self.edits):
-                    ttk.Label(self.edits_frame.viewPort, text=edit.line).grid(row=e + 1, column=0, sticky=tk.W, padx=5)
-                    ttk.Label(self.edits_frame.viewPort, text=edit.word).grid(row=e + 1, column=1, sticky=tk.W, padx=5)
-                    ttk.Label(self.edits_frame.viewPort, text=edit.column).grid(row=e + 1, column=2, sticky=tk.W, padx=5)
+        ttk.Label(self.edits_frame.viewPort, text="Line").grid(row=0, column=0, sticky=tk.W, padx=5)
+        ttk.Label(self.edits_frame.viewPort, text="Word").grid(row=0, column=1, sticky=tk.W, padx=5)
+        ttk.Label(self.edits_frame.viewPort, text="Data Column").grid(row=0, column=2, sticky=tk.W, padx=5)
 
-                    ttk.Button(self.edits_frame.viewPort, text="Delete", command=lambda id=self.edit_ids[e]: self.delete_line_edit(id)).grid(row=e + 1, column=3, sticky=tk.W, padx=5)
+        for e, edit in enumerate(self.edits):
+            ttk.Label(self.edits_frame.viewPort, text=edit.line).grid(row=e + 1, column=0, sticky=tk.W, padx=5)
+            ttk.Label(self.edits_frame.viewPort, text=edit.word).grid(row=e + 1, column=1, sticky=tk.W, padx=5)
+            ttk.Label(self.edits_frame.viewPort, text=edit.column).grid(row=e + 1, column=2, sticky=tk.W, padx=5)
 
-    # def display_line_edits(selfs):
+            ttk.Button(self.edits_frame.viewPort, text="Delete",
+                       command=lambda id=self.edit_ids[e]: self.delete_line_edit(id)).grid(row=e + 1, column=3,
+                                                                                           sticky=tk.W, padx=5)
 
     def preview_line_edits(self):
         if self.preview_window is None and self.avl_picker.is_file_picked():
@@ -156,10 +163,39 @@ class LineEditsFrame(ttk.Frame):
             for i in range(4):
                 widgets[(edit_idx + 1) * 4 - 1 + i].destroy()
 
+    def import_line_edits(self):
+        if self.csv_picker.is_file_picked() and self.avl_picker.is_file_picked():
+            # file type
+            file_types = {
+                ("Text File", "*.txt"),
+            }
+
+            # show the open file dialog
+            f = askopenfile(filetypes=file_types)
+
+            if f:
+                edits_text = f.readlines()
+                self.edits = []
+                self.edit_ids = []
+
+                for edit_text in edits_text:
+                    if edit_text:
+                        edit_text = edit_text.split(",")
+                        edit_int = [ int(x) for x in edit_text]
+                        edit = LineEdit(edit_int[0], edit_int[1], edit_int[2])
+                        self.append_line_edit(edit)
+
+                self.display_line_edits()
+
     def export_line_edits(self):
         if self.edits:
+            # file type
+            file_types = {
+                ("Text File", "*.txt"),
+            }
+
             # show the folder select dialog
-            f_name = asksaveasfilename(initialfile="Untitled.txt", defaultextension=".txt", filetypes=[("Text File", "*.txt")])
+            f_name = asksaveasfilename(initialfile="Untitled.txt", defaultextension=".txt", filetypes=file_types)
             if f_name:
                 print(f_name)
 
