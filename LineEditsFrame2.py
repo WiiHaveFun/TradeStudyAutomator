@@ -1,7 +1,9 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter.simpledialog import Dialog
+from tkinter.filedialog import asksaveasfilename
 import math
+import numpy as np
 
 from ScrollFrame import ScrollFrame
 
@@ -11,10 +13,14 @@ class LineEditsFrame(ttk.Frame):
         super().__init__(container)
 
         # buttons
-        self.button_frame = ttk.Frame(self)
-        self.add_button = ttk.Button(self.button_frame, text="Add line edit")
-        self.preview_button = ttk.Button(self.button_frame, text="Preview edits")
-        self.delete_all_button = ttk.Button(self.button_frame, text="Delete all")
+        self.button_frame_top = ttk.Frame(self)
+        self.add_button = ttk.Button(self.button_frame_top, text="Add line edit")
+        self.preview_button = ttk.Button(self.button_frame_top, text="Preview edits")
+        self.delete_all_button = ttk.Button(self.button_frame_top, text="Delete all")
+
+        self.button_frame_bottom = ttk.Frame(self)
+        self.import_button = ttk.Button(self.button_frame_bottom, text="Import line edits")
+        self.export_button = ttk.Button(self.button_frame_bottom, text="Export line edits")
 
         # line edits
         self.edits_frame = ScrollFrame(self)
@@ -35,15 +41,20 @@ class LineEditsFrame(ttk.Frame):
         self.add_button['command'] = self.add_line_edit
         self.preview_button['command'] = self.preview_line_edits
         self.delete_all_button['command'] = self.delete_line_edits
+        self.export_button['command'] = self.export_line_edits
 
         self.add_button.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
         self.preview_button.grid(column=1, row=0, sticky=tk.W, padx=5, pady=5)
         self.delete_all_button.grid(column=2, row=0, sticky=tk.W, padx=5, pady=5)
-        self.button_frame.grid(column=0, row=0, sticky=tk.W)
+        self.button_frame_top.grid(column=0, row=0, sticky=tk.W)
+
+        self.import_button.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
+        self.export_button.grid(column=1, row=0, sticky=tk.W, padx=5, pady=5)
+        self.button_frame_bottom.grid(column=0, row=1, sticky=tk.W)
 
         self.edits_frame.canvas.configure(highlightthickness=0)
         self.edits_frame.viewPort.configure(borderwidth=0)
-        self.edits_frame.grid(column=0, row=1, sticky=tk.W)
+        self.edits_frame.grid(column=0, row=2, sticky=tk.W, pady=5)
 
     def add_line_edit(self):
         if self.csv_picker.is_file_picked() and self.avl_picker.is_file_picked():
@@ -73,8 +84,9 @@ class LineEditsFrame(ttk.Frame):
                     ttk.Label(self.edits_frame.viewPort, text=edit.word).grid(row=e + 1, column=1, sticky=tk.W, padx=5)
                     ttk.Label(self.edits_frame.viewPort, text=edit.column).grid(row=e + 1, column=2, sticky=tk.W, padx=5)
 
-                    ttk.Button(self.edits_frame.viewPort, text="Delete", command=lambda id=self.edit_ids[e]: self.delete_line_edit(id))\
-                        .grid(row=e + 1, column=3, sticky=tk.W, padx=5)
+                    ttk.Button(self.edits_frame.viewPort, text="Delete", command=lambda id=self.edit_ids[e]: self.delete_line_edit(id)).grid(row=e + 1, column=3, sticky=tk.W, padx=5)
+
+    # def display_line_edits(selfs):
 
     def preview_line_edits(self):
         if self.preview_window is None and self.avl_picker.is_file_picked():
@@ -136,15 +148,29 @@ class LineEditsFrame(ttk.Frame):
         self.edit_ids.pop(edit_idx)
 
         widgets = self.edits_frame.viewPort.winfo_children()
-        print(widgets)
 
         if not self.edits:
             for widget in self.edits_frame.viewPort.winfo_children():
                 widget.destroy()
         else:
             for i in range(4):
-                print((edit_idx + 1) * 4 - 1 + i)
                 widgets[(edit_idx + 1) * 4 - 1 + i].destroy()
+
+    def export_line_edits(self):
+        if self.edits:
+            # show the folder select dialog
+            f_name = asksaveasfilename(initialfile="Untitled.txt", defaultextension=".txt", filetypes=[("Text File", "*.txt")])
+            if f_name:
+                print(f_name)
+
+                edit_array = np.zeros((len(self.edits), 3), dtype=np.ushort)
+
+                for e, edit in enumerate(self.edits):
+                    edit_array[e, 0] = edit.line
+                    edit_array[e, 1] = edit.word
+                    edit_array[e, 2] = edit.column
+
+            np.savetxt(f_name, edit_array, delimiter=',', fmt='%s')
 
     def get_line_edits(self):
         return self.edits
@@ -238,7 +264,7 @@ class LineEditDialog(Dialog):
     def apply(self):
         line = self.e1.get()
         word = self.e2.get()
-        data_column = self.e3.get()
+        data_column = int(self.e3.get().split("—")[0])
         self.result = (line, word, data_column)
 
 
