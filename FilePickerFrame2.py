@@ -4,6 +4,7 @@ from tkinter import filedialog as fd
 import math
 import os
 
+from ScrollFrame import ScrollFrame
 from ScrollableFrame import ScrollableFrame
 
 
@@ -94,16 +95,18 @@ class FilePickerFrame(ttk.Frame):
         text.configure(state=tk.DISABLED)
 
     def view_csv(self):
-        csv_frame = ScrollableFrame(self.viewer_window)
-        csv_frame.pack(expand=True)
+        csv_frame = ScrollFrame(self.viewer_window)
+        csv_frame.canvas.configure(height=300, background="#ffffff")
+        csv_frame.viewPort.configure(background="#ffffff")
+        csv_frame.pack()
 
         data_array = self.get_data()
 
         for r, row_array in enumerate(data_array):
             if r > 0:
-                ttk.Label(csv_frame.scrollable_frame, text=r).grid(column=0, row=r, sticky=tk.W, padx=5)
+                tk.Label(csv_frame.viewPort, text=r, background="#ffffff").grid(column=0, row=r, sticky=tk.W, padx=5)
             for c, entry in enumerate(row_array):
-                ttk.Label(csv_frame.scrollable_frame, text=entry).grid(column=c + 1, row=r, padx=20)
+                tk.Label(csv_frame.viewPort, text=entry, background="#ffffff").grid(column=c + 1, row=r, padx=20)
 
     def get_data(self):
         if self.file_type == "*.csv":
