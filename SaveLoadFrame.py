@@ -45,21 +45,28 @@ class SaveLoadFrame(ttk.Frame):
             self.new_ts_window.title("New Trade Study")
             self.new_ts_window.protocol('WM_DELETE_WINDOW', self.remove_window)
 
+            cmd = self.register(self.remove_window)
+            self.new_ts_window.bind("<<Saved>>", cmd + " %d")
+
             self.new_trade_frame = NewTradeFrame(self.new_ts_window)
 
-
-    def remove_window(self):
+    def remove_window(self, f_name=None):
+        print("Trigger")
+        if f_name is not None:
+            print("Event")
+            self.load_ts(f_name)
         self.new_ts_window.destroy()
         self.new_ts_window = None
 
-    def load_ts(self):
-        # file type
-        file_types = {
-            ("Trade Study files", ".trade"),
-        }
+    def load_ts(self, f_name=None):
+        if not f_name:
+            # file type
+            file_types = {
+                ("Trade Study files", ".trade"),
+            }
 
-        # open file dialog
-        f_name = fd.askopenfilename(filetypes=file_types)
+            # open file dialog
+            f_name = fd.askopenfilename(filetypes=file_types)
 
         # read file if a file is picked and display the file basename
         if f_name:
