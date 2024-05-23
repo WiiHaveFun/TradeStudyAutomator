@@ -179,11 +179,10 @@ class LineEditsFrame(ttk.Frame):
                 self.edit_ids = []
 
                 for edit_text in edits_text:
-                    if edit_text:
-                        edit_text = edit_text.split(",")
-                        edit_int = [ int(x) for x in edit_text]
-                        edit = LineEdit(edit_int[0], edit_int[1], edit_int[2])
-                        self.append_line_edit(edit)
+                    edit_text = edit_text.split(",")
+                    edit_int = [ int(x) for x in edit_text]
+                    edit = LineEdit(edit_int[0], edit_int[1], edit_int[2])
+                    self.append_line_edit(edit)
 
                 self.display_line_edits()
 
