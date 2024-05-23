@@ -41,7 +41,7 @@ class SaveLoadFrame(ttk.Frame):
     def new_ts(self):
         if self.new_ts_window is None:
             self.new_ts_window = tk.Toplevel()
-            self.new_ts_window.geometry("750x375")
+            # self.new_ts_window.geometry("1000x500")
             self.new_ts_window.title("New Trade Study")
             self.new_ts_window.protocol('WM_DELETE_WINDOW', self.remove_window)
 

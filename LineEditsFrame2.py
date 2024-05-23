@@ -2,7 +2,8 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter.simpledialog import Dialog
 import math
-from copy import copy
+
+from ScrollFrame import ScrollFrame
 
 
 class LineEditsFrame(ttk.Frame):
@@ -16,7 +17,7 @@ class LineEditsFrame(ttk.Frame):
         self.delete_all_button = ttk.Button(self.button_frame, text="Delete all")
 
         # line edits
-        self.edits_frame = ttk.Frame(self)
+        self.edits_frame = ScrollFrame(self)
         self.edits = []
         self.edit_ids = []
 
@@ -40,6 +41,8 @@ class LineEditsFrame(ttk.Frame):
         self.delete_all_button.grid(column=2, row=0, sticky=tk.W, padx=5, pady=5)
         self.button_frame.grid(column=0, row=0, sticky=tk.W)
 
+        self.edits_frame.canvas.configure(highlightthickness=0)
+        self.edits_frame.viewPort.configure(borderwidth=0)
         self.edits_frame.grid(column=0, row=1, sticky=tk.W)
 
     def add_line_edit(self):
@@ -47,7 +50,7 @@ class LineEditsFrame(ttk.Frame):
             headers = self.csv_picker.get_data()[0]
             headers = [str(h + 1) + "—" + header for h, header in enumerate(headers)]
 
-            line_edit_parameters = LineEditDialog(self.edits_frame, headers, self.avl_picker.get_data())
+            line_edit_parameters = LineEditDialog(self.edits_frame.viewPort, headers, self.avl_picker.get_data())
 
             if line_edit_parameters.result is not None:
 
@@ -58,19 +61,19 @@ class LineEditsFrame(ttk.Frame):
                 else:
                     self.edit_ids.append(self.edit_ids[-1] + 1)
 
-                for widget in self.edits_frame.winfo_children():
+                for widget in self.edits_frame.viewPort.winfo_children():
                     widget.destroy()
 
-                ttk.Label(self.edits_frame, text="Line").grid(row=0, column=0, sticky=tk.W, padx=5)
-                ttk.Label(self.edits_frame, text="Word").grid(row=0, column=1, sticky=tk.W, padx=5)
-                ttk.Label(self.edits_frame, text="Data Column").grid(row=0, column=2, sticky=tk.W, padx=5)
+                ttk.Label(self.edits_frame.viewPort, text="Line").grid(row=0, column=0, sticky=tk.W, padx=5)
+                ttk.Label(self.edits_frame.viewPort, text="Word").grid(row=0, column=1, sticky=tk.W, padx=5)
+                ttk.Label(self.edits_frame.viewPort, text="Data Column").grid(row=0, column=2, sticky=tk.W, padx=5)
 
                 for e, edit in enumerate(self.edits):
-                    ttk.Label(self.edits_frame, text=edit.line).grid(row=e + 1, column=0, sticky=tk.W, padx=5)
-                    ttk.Label(self.edits_frame, text=edit.word).grid(row=e + 1, column=1, sticky=tk.W, padx=5)
-                    ttk.Label(self.edits_frame, text=edit.column).grid(row=e + 1, column=2, sticky=tk.W, padx=5)
+                    ttk.Label(self.edits_frame.viewPort, text=edit.line).grid(row=e + 1, column=0, sticky=tk.W, padx=5)
+                    ttk.Label(self.edits_frame.viewPort, text=edit.word).grid(row=e + 1, column=1, sticky=tk.W, padx=5)
+                    ttk.Label(self.edits_frame.viewPort, text=edit.column).grid(row=e + 1, column=2, sticky=tk.W, padx=5)
 
-                    ttk.Button(self.edits_frame, text="Delete", command=lambda id=self.edit_ids[e]: self.delete_line_edit(id))\
+                    ttk.Button(self.edits_frame.viewPort, text="Delete", command=lambda id=self.edit_ids[e]: self.delete_line_edit(id))\
                         .grid(row=e + 1, column=3, sticky=tk.W, padx=5)
 
     def preview_line_edits(self):
@@ -124,7 +127,7 @@ class LineEditsFrame(ttk.Frame):
 
     def delete_line_edits(self, event=None):
         self.edits = []
-        for widget in self.edits_frame.winfo_children():
+        for widget in self.edits_frame.viewPort.winfo_children():
             widget.destroy()
 
     def delete_line_edit(self, edit_id):
@@ -132,11 +135,11 @@ class LineEditsFrame(ttk.Frame):
         self.edits.pop(edit_idx)
         self.edit_ids.pop(edit_idx)
 
-        widgets = self.edits_frame.winfo_children()
+        widgets = self.edits_frame.viewPort.winfo_children()
         print(widgets)
 
         if not self.edits:
-            for widget in self.edits_frame.winfo_children():
+            for widget in self.edits_frame.viewPort.winfo_children():
                 widget.destroy()
         else:
             for i in range(4):
