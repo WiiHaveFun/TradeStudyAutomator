@@ -67,8 +67,8 @@ class LineEditsFrame(ttk.Frame):
 
             if line_edit_parameters.result is not None:
 
-                line, word, column = line_edit_parameters.result
-                self.append_line_edit(LineEdit(line, word, column))
+                line, word, column, column_name = line_edit_parameters.result
+                self.append_line_edit(LineEdit(line, word, column, column_name))
                 self.display_line_edits()
 
     def append_line_edit(self, edit):
@@ -89,7 +89,7 @@ class LineEditsFrame(ttk.Frame):
         for e, edit in enumerate(self.edits):
             ttk.Label(self.edits_frame.viewPort, text=edit.line).grid(row=e + 1, column=0, sticky=tk.W, padx=5)
             ttk.Label(self.edits_frame.viewPort, text=edit.word).grid(row=e + 1, column=1, sticky=tk.W, padx=5)
-            ttk.Label(self.edits_frame.viewPort, text=edit.column).grid(row=e + 1, column=2, sticky=tk.W, padx=5)
+            ttk.Label(self.edits_frame.viewPort, text=edit.column_name).grid(row=e + 1, column=2, sticky=tk.W, padx=5)
 
             ttk.Button(self.edits_frame.viewPort, text="Delete",
                        command=lambda id=self.edit_ids[e]: self.delete_line_edit(id)).grid(row=e + 1, column=3,
@@ -108,20 +108,20 @@ class LineEditsFrame(ttk.Frame):
 
             # Replace line edits
             for edit in self.edits:
-                line = lines[int(edit.line) - 1].split()
-                line[int(edit.word) - 1] = edit.column
+                line = lines[edit.line - 1].split()
+                line[edit.word - 1] = edit.column_name
                 line = "\t".join(line)
-                lines[int(edit.line) - 1] = line
+                lines[edit.line - 1] = line
 
             edit_indices = []
             for edit in self.edits:
                 start_index = 0
-                line = lines[int(edit.line) - 1].split()
-                for i in range(int(edit.word) - 1):
+                line = lines[edit.line - 1].split()
+                for i in range(edit.word - 1):
                     start_index += len(line[i]) + 1
 
                 start_index += order + 2
-                end_index = start_index + len(edit.column)
+                end_index = start_index + len(edit.column_name)
                 edit_indices.append([str(edit.line) + "." + str(start_index), str(edit.line) + "." + str(end_index)])
 
             for i in range(len(lines)):
@@ -180,8 +180,8 @@ class LineEditsFrame(ttk.Frame):
 
                 for edit_text in edits_text:
                     edit_text = edit_text.split(",")
-                    edit_int = [ int(x) for x in edit_text]
-                    edit = LineEdit(edit_int[0], edit_int[1], edit_int[2])
+                    edit_int = [int(x) for x in edit_text[0:3]]
+                    edit = LineEdit(edit_int[0], edit_int[1], edit_int[2], edit_text[3].rstrip())
                     self.append_line_edit(edit)
 
                 self.display_line_edits()
@@ -198,24 +198,26 @@ class LineEditsFrame(ttk.Frame):
             if f_name:
                 print(f_name)
 
-                edit_array = np.zeros((len(self.edits), 3), dtype=np.ushort)
+                edit_array = np.zeros((len(self.edits), 4), dtype=object)
 
                 for e, edit in enumerate(self.edits):
                     edit_array[e, 0] = edit.line
                     edit_array[e, 1] = edit.word
                     edit_array[e, 2] = edit.column
+                    edit_array[e, 3] = edit.column_name
 
-            np.savetxt(f_name, edit_array, delimiter=',', fmt='%s')
+                np.savetxt(f_name, edit_array, delimiter=',', fmt='%s')
 
     def get_line_edits(self):
         return self.edits
 
 
 class LineEdit:
-    def __init__(self, line, word, column):
+    def __init__(self, line, word, column, column_name):
         self.line = line
         self.word = word
         self.column = column
+        self.column_name = column_name
 
 
 class LineEditDialog(Dialog):
@@ -297,9 +299,8 @@ class LineEditDialog(Dialog):
         return 1
 
     def apply(self):
-        line = self.e1.get()
-        word = self.e2.get()
+        line = int(self.e1.get())
+        word = int(self.e2.get())
         data_column = int(self.e3.get().split("—")[0])
-        self.result = (line, word, data_column)
-
-
+        data_column_name = self.e3.get()
+        self.result = (line, word, data_column, data_column_name)
