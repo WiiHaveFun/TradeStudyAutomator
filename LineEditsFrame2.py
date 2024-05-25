@@ -255,7 +255,7 @@ class LineEditDialog(Dialog):
             return 0
 
         lines = self.avl_data.split("\n")
-        n_lines = len(self.avl_data.split("\n"))
+        n_lines = len(lines)
 
         if line < 1 or line > n_lines:
             tk.messagebox.showwarning(
@@ -273,16 +273,10 @@ class LineEditDialog(Dialog):
             )
             return 0
 
-        if word < 1:
-            tk.messagebox.showwarning(
-                message="Word is not a valid index" + "\nPlease try again",
-                parent=self
-            )
-            return 0
+        words = lines[line - 1].split()
+        n_words = len(words)
 
-        try:
-            word_value = lines[line - 1].split()[word - 1]
-        except IndexError:
+        if word < 1 or word > n_words:
             tk.messagebox.showwarning(
                 message="Word is not a valid index" + "\nPlease try again",
                 parent=self
