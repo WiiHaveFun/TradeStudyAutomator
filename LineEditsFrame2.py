@@ -79,21 +79,22 @@ class LineEditsFrame(ttk.Frame):
             self.edit_ids.append(self.edit_ids[-1] + 1)
 
     def display_line_edits(self):
-        for widget in self.edits_frame.viewPort.winfo_children():
-            widget.destroy()
+        if self.edits:
+            for widget in self.edits_frame.viewPort.winfo_children():
+                widget.destroy()
 
-        ttk.Label(self.edits_frame.viewPort, text="Line").grid(row=0, column=0, sticky=tk.W, padx=5)
-        ttk.Label(self.edits_frame.viewPort, text="Word").grid(row=0, column=1, sticky=tk.W, padx=5)
-        ttk.Label(self.edits_frame.viewPort, text="Data Column").grid(row=0, column=2, sticky=tk.W, padx=5)
+            ttk.Label(self.edits_frame.viewPort, text="Line").grid(row=0, column=0, sticky=tk.W, padx=5)
+            ttk.Label(self.edits_frame.viewPort, text="Word").grid(row=0, column=1, sticky=tk.W, padx=5)
+            ttk.Label(self.edits_frame.viewPort, text="Data Column").grid(row=0, column=2, sticky=tk.W, padx=5)
 
-        for e, edit in enumerate(self.edits):
-            ttk.Label(self.edits_frame.viewPort, text=edit.line).grid(row=e + 1, column=0, sticky=tk.W, padx=5)
-            ttk.Label(self.edits_frame.viewPort, text=edit.word).grid(row=e + 1, column=1, sticky=tk.W, padx=5)
-            ttk.Label(self.edits_frame.viewPort, text=edit.column_name).grid(row=e + 1, column=2, sticky=tk.W, padx=5)
+            for e, edit in enumerate(self.edits):
+                ttk.Label(self.edits_frame.viewPort, text=edit.line).grid(row=e + 1, column=0, sticky=tk.W, padx=5)
+                ttk.Label(self.edits_frame.viewPort, text=edit.word).grid(row=e + 1, column=1, sticky=tk.W, padx=5)
+                ttk.Label(self.edits_frame.viewPort, text=edit.column_name).grid(row=e + 1, column=2, sticky=tk.W, padx=5)
 
-            ttk.Button(self.edits_frame.viewPort, text="Delete",
-                       command=lambda id=self.edit_ids[e]: self.delete_line_edit(id)).grid(row=e + 1, column=3,
-                                                                                           sticky=tk.W, padx=5)
+                ttk.Button(self.edits_frame.viewPort, text="Delete",
+                           command=lambda id=self.edit_ids[e]: self.delete_line_edit(id)).grid(row=e + 1, column=3,
+                                                                                               sticky=tk.W, padx=5)
 
     def preview_line_edits(self):
         if self.preview_window is None and self.avl_picker.is_file_picked():
@@ -146,6 +147,7 @@ class LineEditsFrame(ttk.Frame):
 
     def delete_line_edits(self, event=None):
         self.edits = []
+        self.edit_ids = []
         for widget in self.edits_frame.viewPort.winfo_children():
             widget.destroy()
 
@@ -178,11 +180,32 @@ class LineEditsFrame(ttk.Frame):
                 self.edits = []
                 self.edit_ids = []
 
-                for edit_text in edits_text:
+                headers = self.csv_picker.get_data()[0]
+                headers = [str(h + 1) + "—" + header for h, header in enumerate(headers)]
+
+                for e, edit_text in enumerate(edits_text):
                     edit_text = edit_text.split(",")
-                    edit_int = [int(x) for x in edit_text[0:3]]
-                    edit = LineEdit(edit_int[0], edit_int[1], edit_int[2], edit_text[3].rstrip())
-                    self.append_line_edit(edit)
+
+                    try:
+                        edit_int = [int(x) for x in edit_text[0:3]]
+                    except Exception:
+                        tk.messagebox.showwarning(
+                            message="Error in line " + str(e+1) + "\nPlease try again",
+                            parent=self
+                        )
+                        self.delete_line_edits()
+                        break
+                    else:
+                        if validate(self, edit_int[0], edit_int[1], edit_int[2], edit_text[3].rstrip(), self.avl_picker.get_data(), headers):
+                            edit = LineEdit(edit_int[0], edit_int[1], edit_int[2], edit_text[3].rstrip())
+                            self.append_line_edit(edit)
+                        else:
+                            tk.messagebox.showwarning(
+                                message="Error in line " + str(e + 1) + "\nPlease try again",
+                                parent=self
+                            )
+                            self.delete_line_edits()
+                            break
 
                 self.display_line_edits()
 
@@ -221,8 +244,8 @@ class LineEdit:
 
 
 class LineEditDialog(Dialog):
-    def __init__(self, container, data_columns, avl_data):
-        self.data_columns = data_columns
+    def __init__(self, container, data_column_names, avl_data):
+        self.data_column_names = data_column_names
         self.avl_data = avl_data
 
         super().__init__(container)
@@ -235,7 +258,7 @@ class LineEditDialog(Dialog):
         self.e1 = ttk.Entry(container)
         self.e2 = ttk.Entry(container)
         self.e3 = ttk.Combobox(container)
-        self.e3['values'] = self.data_columns
+        self.e3['values'] = self.data_column_names
         self.e3['state'] = 'readonly'
 
         self.e1.grid(row=0, column=1, sticky=tk.E)
@@ -245,52 +268,53 @@ class LineEditDialog(Dialog):
         return self.e1
 
     def validate(self):
-        try:
-            line = int(self.e1.get())
-        except ValueError:
-            tk.messagebox.showwarning(
-                message="Line is not an integer" + "\nPlease try again",
-                parent=self
-            )
-            return 0
-
-        lines = self.avl_data.split("\n")
-        n_lines = len(lines)
-
-        if line < 1 or line > n_lines:
-            tk.messagebox.showwarning(
-                message="Line is out of bounds" + "\nPlease try again",
-                parent=self
-            )
-            return 0
-
-        try:
-            word = int(self.e2.get())
-        except ValueError:
-            tk.messagebox.showwarning(
-                message="Word is not an integer" + "\nPlease try again",
-                parent=self
-            )
-            return 0
-
-        words = lines[line - 1].split()
-        n_words = len(words)
-
-        if word < 1 or word > n_words:
-            tk.messagebox.showwarning(
-                message="Word is not a valid index" + "\nPlease try again",
-                parent=self
-            )
-            return 0
-
-        if not self.e3.get():
-            tk.messagebox.showwarning(
-                message="Select a data column" + "\nPlease try again",
-                parent=self
-            )
-            return 0
-
-        return 1
+        return validate(self, self.e1.get(), self.e2.get(), None, self.e3.get(), self.avl_data)
+        # try:
+        #     line = int(self.e1.get())
+        # except ValueError:
+        #     tk.messagebox.showwarning(
+        #         message="Line is not an integer" + "\nPlease try again",
+        #         parent=self
+        #     )
+        #     return 0
+        #
+        # lines = self.avl_data.split("\n")
+        # n_lines = len(lines)
+        #
+        # if line < 1 or line > n_lines:
+        #     tk.messagebox.showwarning(
+        #         message="Line is out of bounds" + "\nPlease try again",
+        #         parent=self
+        #     )
+        #     return 0
+        #
+        # try:
+        #     word = int(self.e2.get())
+        # except ValueError:
+        #     tk.messagebox.showwarning(
+        #         message="Word is not an integer" + "\nPlease try again",
+        #         parent=self
+        #     )
+        #     return 0
+        #
+        # words = lines[line - 1].split()
+        # n_words = len(words)
+        #
+        # if word < 1 or word > n_words:
+        #     tk.messagebox.showwarning(
+        #         message="Word is not a valid index" + "\nPlease try again",
+        #         parent=self
+        #     )
+        #     return 0
+        #
+        # if not self.e3.get():
+        #     tk.messagebox.showwarning(
+        #         message="Select a data column" + "\nPlease try again",
+        #         parent=self
+        #     )
+        #     return 0
+        #
+        # return 1
 
     def apply(self):
         line = int(self.e1.get())
@@ -298,3 +322,61 @@ class LineEditDialog(Dialog):
         data_column = int(self.e3.get().split("—")[0])
         data_column_name = self.e3.get()
         self.result = (line, word, data_column, data_column_name)
+
+def validate(container, line, word, column, column_name, avl_data, data_column_names=None):
+    try:
+        line = int(line)
+    except ValueError:
+        tk.messagebox.showwarning(
+            message="Line is not an integer" + "\nPlease try again",
+            parent=container
+        )
+        return 0
+
+    lines = avl_data.split("\n")
+    n_lines = len(lines)
+
+    if line < 1 or line > n_lines:
+        tk.messagebox.showwarning(
+            message="Line is out of bounds" + "\nPlease try again",
+            parent=container
+        )
+        return 0
+
+    try:
+        word = int(word)
+    except ValueError:
+        tk.messagebox.showwarning(
+            message="Word is not an integer" + "\nPlease try again",
+            parent=container
+        )
+        return 0
+
+    words = lines[line - 1].split()
+    n_words = len(words)
+
+    if word < 1 or word > n_words:
+        tk.messagebox.showwarning(
+            message="Word is not a valid index" + "\nPlease try again",
+            parent=container
+        )
+        return 0
+
+    if not column_name:
+        tk.messagebox.showwarning(
+            message="Select a data column" + "\nPlease try again",
+            parent=container
+        )
+        return 0
+
+    if data_column_names is not None:
+        if column_name != data_column_names[column - 1]:
+            tk.messagebox.showwarning(
+                message="Column names do not match" + "\nPlease try again",
+                parent=container
+            )
+            return 0
+
+    return 1
+
+
