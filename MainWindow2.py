@@ -7,7 +7,7 @@ class MainWindow(tk.Tk):
         super().__init__()
 
         # Window dimensions and title
-        self.geometry("1000x500")
+        # self.geometry("1000x500")
         self.title("M-FLY Trade Study Automator")
         self.resizable(True, True)
 

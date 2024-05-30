@@ -3,6 +3,9 @@ import tkinter.ttk as ttk
 # import numpy as np
 from MainWindow2 import MainWindow
 from SaveLoadFrame import SaveLoadFrame
+from CommandsFrame import CommandsFrame
+
+import multiprocessing
 from FilePickerFrame import FilePickerFrame
 from ColumnHeaderFrame import ColumnHeaderFrame
 from LineEditsFrame import LineEditsFrame
@@ -19,7 +22,23 @@ from WordPickerFrame import WordPickerFrame
 main_window = MainWindow()
 
 save_load_frame = SaveLoadFrame(main_window)
-save_load_frame.grid(row=1, column=0, sticky=tk.W)
+save_load_frame.grid(column=0, row=1, sticky=tk.W)
+
+commands_frame = CommandsFrame(main_window)
+commands_frame.grid(column=0, row=2, sticky=tk.W)
+
+process_header = ttk.Label(main_window, text="Number of processes", font=("Helvetica Italic", 12, "bold"))
+process_header.grid(column=0, row=3, sticky=tk.W, padx=5, pady=5)
+process_combobox = ttk.Combobox(main_window, values=list(range(1, multiprocessing.cpu_count()+1)), state="readonly", width=3)
+process_combobox.current(0)
+process_combobox.grid(column=0, row=4, sticky=tk.W, padx=5)
+
+def prepare_trade():
+    pass
+
+start_button = ttk.Button(main_window, text="Start", command=prepare_trade)
+start_button.grid(column=0, row=5, sticky=tk.W, padx=5, pady=5)
+
 
 # columnHeaderFrame = ColumnHeaderFrame(mainWindow)
 # columnHeaderFrame.grid(row=3, column=0, stick=tk.W, pady=5)

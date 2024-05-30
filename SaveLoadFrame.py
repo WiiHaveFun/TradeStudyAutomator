@@ -51,9 +51,7 @@ class SaveLoadFrame(ttk.Frame):
             self.new_trade_frame = NewTradeFrame(self.new_ts_window)
 
     def remove_window(self, f_name=None):
-        print("Trigger")
         if f_name is not None:
-            print("Event")
             self.load_ts(f_name)
         self.new_ts_window.destroy()
         self.new_ts_window = None
@@ -74,6 +72,11 @@ class SaveLoadFrame(ttk.Frame):
             self.ts = pickle.load(self.f)
             self.f.close()
             self.loaded_file_label['text'] = "Name: " + os.path.basename(self.f.name)
+
+            if self.ts.mass:
+                self.event_generate("<<Loaded>>", data="1")
+            else:
+                self.event_generate("<<Loaded>>", data="0")
 
     def get_ts(self):
         return self.ts
