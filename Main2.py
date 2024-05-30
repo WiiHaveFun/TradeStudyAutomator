@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
+from copy import deepcopy
 
 import math
 
@@ -39,9 +40,15 @@ def run_process(ts, n, start_idx, end_idx, folder, st, fs, progress, stop_reques
     # Set progress to stopped
 
     print("started")
-    csv_data = ts.csv
+    csv_data = deepcopy(ts.csv)
+    csv_data.pop(0)
     lines = ts.avl.split("\n")
     edits = ts.edits
+
+    if os.path.isfile("process" + str(n) + "ST.txt"):
+        os.remove("process" + str(n) + "ST.txt")
+    if os.path.isfile("process" + str(n) + "FS.txt"):
+        os.remove("process" + str(n) + "FS.txt")
 
     counter = 0
     for i in range(start_idx, end_idx):
@@ -55,11 +62,6 @@ def run_process(ts, n, start_idx, end_idx, folder, st, fs, progress, stop_reques
             avl_f = open("process" + str(n) + ".avl", "w")
             avl_f.write(avl_data)
             avl_f.close()
-
-        if os.path.isfile("process" + str(n) + "ST.txt"):
-            os.remove("process" + str(n) + "ST.txt")
-        if os.path.isfile("process" + str(n) + "FS.txt"):
-            os.remove("process" + str(n) + "FS.txt")
 
         try:
             proc = subprocess.Popen("./run_process" + str(n) + ".sh")  # For Mac
@@ -85,7 +87,7 @@ def run_process(ts, n, start_idx, end_idx, folder, st, fs, progress, stop_reques
             while not os.path.isfile(folder + "/FS/FS" + str(i + 1) + ".txt"):
                 pass
 
-        # time.sleep(0.1)
+        # time.sleep(1.0)
         proc.kill()
 
         counter += 1
@@ -109,7 +111,7 @@ def prepare_trade(root):
         stop_requested.value = 0
 
         ts = save_load_frame.get_ts()
-        csv_data = ts.csv
+        csv_data = deepcopy(ts.csv)
         csv_data.pop(0)
         avl_data = ts.avl
         if ts.mass is not None:
@@ -195,8 +197,10 @@ def check_trade_status(root, processes, progress, length, pb):
     root.update_idletasks()
 
     if sum(progress) == length or stop_requested.value:
+        for process in processes:
+            process.join()
+        # time.sleep(3.0)
         stop_trade(root, processes, pb)
-        pass
     else:
         root.after(100, lambda: check_trade_status(root, processes, progress, length, pb))
 
@@ -210,9 +214,6 @@ def stop_trade(root, processes, pb):
     global trade_started
 
     pb.destroy()
-    for process in processes:
-        process.join()
-    pass
 
     for i in range(1, len(processes)+1):
         if os.path.isfile("process" + str(i) + "ST.txt"):
