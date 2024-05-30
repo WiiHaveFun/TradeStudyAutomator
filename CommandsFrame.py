@@ -52,9 +52,9 @@ class CommandsFrame(ttk.Frame):
         self.commands_suffix = ["x"]
 
         if self.ST_value.get():
-            self.commands_suffix.append("ST dataX.st")
+            self.commands_suffix.append("ST dataXST.txt")
         if self.FS_value.get():
-            self.commands_suffix.append("FS dataX.fs")
+            self.commands_suffix.append("FS dataXFS.txt")
 
         self.commands_suffix.append("")
         self.commands_suffix.append("quit")
