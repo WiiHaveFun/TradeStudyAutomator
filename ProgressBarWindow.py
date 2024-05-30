@@ -12,15 +12,22 @@ class ProgressBarWindow(tk.Toplevel):
         self.resizable(False, False)
         self.rowconfigure(0, weight=1)
 
-        self.progressBar = ttk.Progressbar(self, orient="horizontal", mode="determinate", length=280)
+        self.progress_bar = ttk.Progressbar(self, orient="horizontal", mode="determinate", length=280)
+
+        self.stop_button = ttk.Button(self, text="Stop", command=self.request_stop)
 
         self.create_widgets()
 
     def create_widgets(self):
-        self.progressBar.grid(column=0, row=0, padx=5, pady=5)
+        self.progress_bar.grid(column=0, row=0, padx=5, pady=5)
+        self.stop_button.grid(column=0, row=1, padx=5, pady=5)
 
     def update(self, value):
-        self.progressBar["value"] = value
+        self.progress_bar["value"] = value
 
     def remove_window(self):
         pass
+
+    def request_stop(self):
+        self.event_generate("<<Stop>>")
+
