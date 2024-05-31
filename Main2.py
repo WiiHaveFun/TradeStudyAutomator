@@ -39,9 +39,10 @@ def run_process(ts, n, start_idx, end_idx, folder, st, fs, progress, stop_reques
     # Kill current process
     # Set progress to stopped
 
-    print("started")
     csv_data = deepcopy(ts.csv)
     csv_data.pop(0)
+    if len(csv_data[-1]) == 1 and not csv_data[-1][0]:
+        csv_data.pop(-1)
     lines = ts.avl.split("\n")
     edits = ts.edits
 
@@ -113,6 +114,8 @@ def prepare_trade(root):
         ts = save_load_frame.get_ts()
         csv_data = deepcopy(ts.csv)
         csv_data.pop(0)
+        if len(csv_data[-1]) == 1 and not csv_data[-1][0]:
+            csv_data.pop(-1)
         avl_data = ts.avl
         if ts.mass is not None:
             mass_data = ts.mass
@@ -130,7 +133,6 @@ def prepare_trade(root):
         csv_idx = []
 
         for i in range(n_process):
-            print(i + 1)
             avl_f = open("process" + str(i + 1) + ".avl", "w")
             avl_f.write(avl_data)
             avl_f.close()
@@ -145,7 +147,6 @@ def prepare_trade(root):
                 commands[1] = "mass process" + str(i + 1) + ".mass"
             if commands_frame.ST_value.get():
                 commands[commands.index("ST dataXST.txt")] = "ST process" + str(i + 1) + "ST.txt"
-                print("Changing")
             if commands_frame.FS_value.get():
                 commands[commands.index("FS dataXFS.txt")] = "FS process" + str(i + 1) + "FS.txt"
             commands = commands + [""]
