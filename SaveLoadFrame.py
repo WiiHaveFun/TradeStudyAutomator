@@ -21,8 +21,8 @@ class SaveLoadFrame(ttk.Frame):
 
         # buttons
         self.button_frame = ttk.Frame(self)
-        self.new_ts_button = ttk.Button(self.button_frame, text="New Trade Study")
-        self.load_ts_button = ttk.Button(self.button_frame, text="Load Trade Study")
+        self.new_ts_button = ttk.Button(self.button_frame, text="New trade study")
+        self.load_ts_button = ttk.Button(self.button_frame, text="Load trade study")
 
         # selected file label
         self.loaded_file_label = ttk.Label(self, text="Trade Study: ")
