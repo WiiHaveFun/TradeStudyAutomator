@@ -4,7 +4,7 @@ from tkinter.simpledialog import Dialog
 from tkinter.filedialog import asksaveasfilename
 from tkinter.filedialog import askopenfile
 import math
-import numpy as np
+import csv
 
 from ScrollFrame import ScrollFrame
 
@@ -221,15 +221,15 @@ class LineEditsFrame(ttk.Frame):
             if f_name:
                 print(f_name)
 
-                edit_array = np.zeros((len(self.edits), 4), dtype=object)
+                edit_array = []
 
                 for e, edit in enumerate(self.edits):
-                    edit_array[e, 0] = edit.line
-                    edit_array[e, 1] = edit.word
-                    edit_array[e, 2] = edit.column
-                    edit_array[e, 3] = edit.column_name
+                    edit_array.append([edit.line, edit.word, edit.column, edit.column_name])
 
-                np.savetxt(f_name, edit_array, delimiter=',', fmt='%s')
+                f = open(f_name, "w")
+                writer = csv.writer(f)
+                writer.writerows(edit_array)
+                f.close()
 
     def get_line_edits(self):
         return self.edits
