@@ -197,7 +197,7 @@ class LineEditsFrame(ttk.Frame):
                         break
                     else:
                         if validate(self, edit_int[0], edit_int[1], edit_int[2], edit_text[3].rstrip(), self.avl_picker.get_data(), headers):
-                            edit = LineEdit(edit_int[0], edit_int[1], edit_int[2], edit_text[3].rstrip())
+                            edit = LineEdit(edit_int[0], edit_int[1], edit_int[2], str(edit_int[2]) + "—" + edit_text[3].rstrip())
                             self.append_line_edit(edit)
                         else:
                             tk.messagebox.showwarning(
@@ -224,9 +224,9 @@ class LineEditsFrame(ttk.Frame):
                 edit_array = []
 
                 for e, edit in enumerate(self.edits):
-                    edit_array.append([edit.line, edit.word, edit.column, edit.column_name])
+                    edit_array.append([edit.line, edit.word, edit.column, edit.column_name.split("—")[1]])
 
-                f = open(f_name, "w")
+                f = open(f_name, "w", newline='')
                 writer = csv.writer(f)
                 writer.writerows(edit_array)
                 f.close()
@@ -370,7 +370,7 @@ def validate(container, line, word, column, column_name, avl_data, data_column_n
         return 0
 
     if data_column_names is not None:
-        if column_name != data_column_names[column - 1]:
+        if column_name != data_column_names[column - 1].split("—")[1]:
             tk.messagebox.showwarning(
                 message="Column names do not match" + "\nPlease try again",
                 parent=container
