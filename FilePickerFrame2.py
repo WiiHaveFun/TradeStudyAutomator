@@ -25,7 +25,7 @@ class FilePickerFrame(ttk.Frame):
         self.view_button = ttk.Button(self.button_frame, text="View file")
 
         # path label
-        self.picked_file_label = ttk.Label(self, text="Path:")
+        self.picked_file_label = ttk.Label(self, text="File:")
 
         self.create_widgets()
 
@@ -53,7 +53,7 @@ class FilePickerFrame(ttk.Frame):
         # display file path and read file if a file is picked
         if f_name:
             self.f = open(f_name)
-            self.picked_file_label['text'] = "Path: " + os.path.basename(self.f.name)
+            self.picked_file_label['text'] = "File: " + os.path.basename(self.f.name)
             self.data = self.f.read()
             self.f.close()
 
