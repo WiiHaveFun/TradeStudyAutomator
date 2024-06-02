@@ -13,6 +13,7 @@ import subprocess
 import datetime
 import math
 from copy import deepcopy
+import time
 
 trade_started = False
 stop_requested = multiprocessing.Value('i')
@@ -57,7 +58,7 @@ def run_process(ts, n, start_idx, end_idx, folder, st, fs, progress, stop_reques
         try:
             proc = subprocess.Popen("./run_process" + str(n) + ".sh")  # For Mac
         except:
-            proc = subprocess.Popen("run_avl_commands.bat")  # For Windows
+            proc = subprocess.Popen("run_process" + str(n) + ".bat")  # For Windows
 
         if st:
             while not os.path.isfile("process" + str(n) + "ST.txt"):
@@ -65,6 +66,7 @@ def run_process(ts, n, start_idx, end_idx, folder, st, fs, progress, stop_reques
                     break
             if stop_requested.value == 1:
                 break
+            time.sleep(0.1)
             os.rename("process" + str(n) + "ST.txt", folder + "/ST/ST" + str(i + 1) + ".txt")
             while not os.path.isfile(folder + "/ST/ST" + str(i + 1) + ".txt"):
                 pass
@@ -74,6 +76,7 @@ def run_process(ts, n, start_idx, end_idx, folder, st, fs, progress, stop_reques
                     break
             if stop_requested.value == 1:
                 break
+            time.sleep(0.1)
             os.rename("process" + str(n) + "FS.txt", folder + "/FS/FS" + str(i + 1) + ".txt")
             while not os.path.isfile(folder + "/FS/FS" + str(i + 1) + ".txt"):
                 pass
