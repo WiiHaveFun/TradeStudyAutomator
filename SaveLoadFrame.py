@@ -4,7 +4,6 @@ from tkinter import filedialog as fd
 import pickle
 import os
 
-from FilePickerFrame import FilePickerFrame
 from NewTradeFrame import NewTradeFrame
 
 
