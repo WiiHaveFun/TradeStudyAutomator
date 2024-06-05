@@ -56,7 +56,7 @@ class NewTradeFrame(ttk.Frame):
             }
 
             # open file dialog
-            f = asksaveasfile(mode="wb", filetypes=file_types)
+            f = asksaveasfile(mode="wb", initialfile="Untitled.trade", defaultextension=".trade", filetypes=file_types)
 
             if f:
                 ts = TradeStudy(self.csv_picker_frame.get_data(), self.avl_picker_frame.get_data(),
